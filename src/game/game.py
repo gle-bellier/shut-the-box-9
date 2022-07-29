@@ -2,6 +2,8 @@ import numpy as np
 from copy import deepcopy
 
 from src.game.board import Board
+from src.game.game_buffer import Buffer
+
 from src.agents.agent import Agent
 
 
@@ -19,7 +21,7 @@ class Game:
         self.agent = agent
 
         # history of the played moves
-        self.history = []
+        self.buffer = Buffer(deepcopy(board))
 
         # state = True while the game is on
         self.state = True
@@ -48,13 +50,8 @@ class Game:
             if verbose:
                 print(f"No legal action. Sum of di(c)e = {sum_dice}")
 
-            # add step to the history of the game
-            step_record = {
-                "sum_dice": sum_dice,
-                "action": None,
-                "board": deepcopy(self.board)
-            }
-            self.history += [step_record]
+            # add step to the buffer of the game
+            self.buffer.add_step(sum_dice=sum_dice, action=None)
             return False
 
         # if there is then ask the agent to choose.
@@ -68,13 +65,8 @@ class Game:
             print("Board after move:")
             print(self.board)
 
-        # add step to the history of the game
-        step_record = {
-            "sum_dice": sum_dice,
-            "action": action,
-            "board": deepcopy(self.board)
-        }
-        self.history += [step_record]
+        # add step to the buffer of the game
+        self.buffer.add_step(sum_dice=sum_dice, action=action)
 
         # check if the game is finished or not
         return not self.board.check_end()
@@ -96,21 +88,20 @@ class Game:
         score = self.evaluate()
 
         # add score to the history
-        self.history += [{"score": score}]
+        self.buffer.set_end_score(score)
 
         if verbose:
             print(f"Score = {score}.")
         return score
 
-    def evaluate(self) -> float:
+    def evaluate(self) -> int:
         """Evaluate the score at the end of the game.
-        Sum of the values of the tiles that are still up
-        divided by the result in the worst case. (resign)
+        Sum of the values of the tiles that are still up.
 
         Returns:
-            float: score between 0 and 1
+            int: score 0 and 45.
         """
 
         digits = np.arange(1, 10, 1)
         up_values = self.board.board[:, 0] * digits
-        return np.sum(up_values) / np.sum(digits)
+        return np.sum(up_values)

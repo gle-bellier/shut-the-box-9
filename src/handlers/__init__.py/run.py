@@ -9,4 +9,4 @@ random_agent = RandomAgent()
 game = Game(board, random_agent)
 
 done = game.run_game()
-print(game.history)
+print(game.buffer.steps)
