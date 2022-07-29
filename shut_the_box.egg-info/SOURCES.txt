@@ -1,9 +1,0 @@
-setup.py
-./src/__init__.py
-./src/game/__init__.py
-./src/game/board.py
-./src/game/rules.py
-shut_the_box.egg-info/PKG-INFO
-shut_the_box.egg-info/SOURCES.txt
-shut_the_box.egg-info/dependency_links.txt
-shut_the_box.egg-info/top_level.txt
