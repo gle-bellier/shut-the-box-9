@@ -1,22 +1,32 @@
 from typing import List, Tuple
 import random
+from src.data.datasets.embedder import Embedder
 
+from src.data.datasets.np_dataloader import NumpyLoader
 from src.data.utils import read_pickle
 from src.data.datasets.actions_dataset import ActionsDataset
 
 
 class ActionsDatasetGenerator:
 
-    def __init__(self, path: str, nb_actions_max=None) -> None:
+    def __init__(self,
+                 path: str,
+                 batch_size: int,
+                 embedder: Embedder,
+                 nb_actions_max=None) -> None:
         """Initialize the reader.
 
         Args:
             path (str): path to the pickle file.
+            batch_size (int): batch size.
+            embedder (Embedder): data embedder.
             nb_actions_max (int, optional): maximum number of actions 
             to return. Defaults to None, i.e. returning all actions from 
             the dataset.
         """
         self.path = path
+        self.batch_size = batch_size
+        self.embedder = embedder
         self.actions = self.load_actions(nb_actions_max)
 
     def load_actions(self, nb_actions_max=None) -> List[dict]:
@@ -68,23 +78,28 @@ class ActionsDatasetGenerator:
     def split(self,
               proportions=[0.8, 0.1, 0.1],
               shuffle=True) -> Tuple[ActionsDataset]:
+        """Split the dataset into train, val, test dataloaders.
+
+        Args:
+            proportions (list, optional): proportions of the datasets.
+            Defaults to [0.8, 0.1, 0.1].
+            shuffle (bool, optional): shuffling if True. Defaults to True.
+
+        Returns:
+            Tuple[ActionsDataset]: train, val, test dataloaders.
+        """
 
         if shuffle:
             random.shuffle(self.actions)
 
         # split full dataset in 3 wrt the proportions
-        train_indexes, val_indexes, test_indexes = self.__split_indexes(
-            len(self.actions), proportions)
+        split_indexes = self.__split_indexes(len(self.actions), proportions)
 
-        train = self.actions[slice(*train_indexes)]
-        val = self.actions[slice(*val_indexes)]
-        test = self.actions[slice(*test_indexes)]
+        dataloaders = []
+        for indexes in split_indexes:
 
-        return ActionsDataset(train), ActionsDataset(val), ActionsDataset(test)
+            data = self.actions[slice(*indexes)]
+            dataset = ActionsDataset(data, self.embedder)
+            dataloaders += [NumpyLoader(dataset, batch_size=self.batch_size)]
 
-
-if __name__ == "__main__":
-    adg = ActionsDatasetGenerator("data/games/games_resumes.pickle")
-    train, val, test = adg.split()
-    print(len(train.actions))
-    print(train[0])
+        return dataloaders

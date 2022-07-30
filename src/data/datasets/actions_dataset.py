@@ -1,18 +1,21 @@
 import numpy as np
 from typing import List
 
-from src.data.utils import read_pickle
+from torch.utils.data import Dataset
+
+from src.data.datasets.embedder import Embedder
 
 
-class ActionsDataset:
+class ActionsDataset(Dataset):
 
-    def __init__(self, actions: List[dict]) -> None:
+    def __init__(self, actions: List[dict], embedder: Embedder) -> None:
         """Initialize the ActionsDataset.
 
         Args:
             actions (List[dict]): list of all actions.
         """
         self.actions = actions
+        self.embedder = embedder
 
     def __len__(self) -> int:
         """Return length of the dataset.
@@ -34,5 +37,4 @@ class ActionsDataset:
         """
 
         i = max(0, min(len(self) - 1, i))
-
-        return list(self.actions[i].values())
+        return self.embedder.embed(self.actions[i])
