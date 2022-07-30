@@ -7,7 +7,7 @@ from effortless_config import Config
 
 
 class config(Config):
-    NB_GAMES = 100
+    NB_GAMES = 100_000
     FILENAME = "games_resumes.pickle"
 
 

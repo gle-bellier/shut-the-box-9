@@ -8,7 +8,6 @@ from src.data.datasets.actions_dataset import ActionsDataset
 
 
 class ActionsDatasetGenerator:
-
     def __init__(self,
                  path: str,
                  batch_size: int,
