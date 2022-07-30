@@ -14,12 +14,12 @@ class Embedder:
             nb_class (int): number of classes.
 
         Returns:
-            np.ndarray: one hot embedding
+            np.ndarray: one hot embedding of shape (nb_class, 1).
         """
 
-        assert i < nb_class, f"Index {i} greater than (nb class {nb_class})-1"
+        assert i - 1 < nb_class, f"Index {i} greater than (nb class {nb_class})-1"
         assert i > 0, "Index must be greater than 0."
-        return np.eye(nb_class)[i]
+        return np.eye(nb_class)[i - 1].reshape(-1, 1)
 
     def __score_embedding(self, score: int) -> float:
         """Compute the score embedding i.e. score
@@ -34,6 +34,15 @@ class Embedder:
         return score / 45
 
     def embed(self, x: dict) -> dict:
+        """Compute the embeddings.
+
+        Args:
+            x (dict): board, sum di(c)e, score dict.
+
+        Returns:
+            dict: board of shape (9, 2), sum di(c)e of 
+            shape (12. 1), score (float).
+        """
         board = x["board"]
         sum_dice = self.__one_hot(x["sum_dice"], 12)
         score = self.__score_embedding(x["score"])
