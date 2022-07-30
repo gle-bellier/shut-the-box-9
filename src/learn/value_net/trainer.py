@@ -7,7 +7,7 @@ from .value_net import ValueNet
 
 import ml_collections
 from torch.utils import tensorboard
-from flax.training import train_state
+from flax.training import train_state, checkpoints
 import jax
 import jax.numpy as jnp
 import numpy as np
@@ -109,6 +109,9 @@ def train_and_evaluate(config: ml_collections.ConfigDict,
             },
             global_step=epoch,
         )
+
+    # save model:
+    checkpoints.save_checkpoint(config.models_dir, state, epoch)
 
     summary_writer.flush()
     return state
