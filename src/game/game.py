@@ -105,3 +105,11 @@ class Game:
         digits = np.arange(1, 10, 1)
         up_values = self.board.board[:, 0] * digits
         return np.sum(up_values)
+
+    def get_resume(self) -> list:
+        """Compute the resume of the game
+
+        Returns:
+            list: list of the played actions.
+        """
+        return self.buffer.get_resume()

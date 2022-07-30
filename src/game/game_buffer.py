@@ -31,3 +31,19 @@ class Buffer:
             score (int): end score.
         """
         self.score = score
+
+    def get_resume(self):
+
+        resume = []
+
+        for step in self.steps:
+            resume += [{
+                "board": self.board.board,
+                "sum_dice": step["sum_dice"],
+                "action": step["action"],
+                "score": self.score
+            }]
+            if step["action"] != None:
+                self.board.play_action(step["action"])
+
+        return resume
