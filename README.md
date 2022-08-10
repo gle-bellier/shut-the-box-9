@@ -13,7 +13,7 @@ The game in itself is implemented in the `/src/game` folder and a memory buffer 
 
 The trained (or random) agents are available in `/src/agents`. All the scripts dealing with agents training and neural networks architectures are in `/src/learn`.
 
-Some tests are also implemented to ensure the robustness of the training pipeline in the `/tests folder`
+Some tests are also implemented to ensure the robustness of the training pipeline in the `/tests` folder
 
 ## Installation
 
