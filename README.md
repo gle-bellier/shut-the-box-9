@@ -20,14 +20,15 @@ Some tests are also implemented to ensure the robustness of the training pipelin
 1. Clone this repository:
 
 ```bash
-git clone git@github.com:gle-bellier/stb9.git
+git clone git@github.com:gle-bellier/shut-the-box-9.git
 
 ```
 
 2. Install requirements:
 
 ```bash
-cd stb9
+cd shut-the-box-9
 pip install -r requirements.txt
+pip install -e .
 
 ```
